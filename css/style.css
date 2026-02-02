@@ -1,0 +1,301 @@
+/**
+ * Site Enhancer Widgets Styles
+ * Optimiert für GeneratePress Sidebar (300px Breite)
+ * Version: 1.0.0
+ */
+
+/* ============================================================================
+   WETTER-WIDGET - KOMPAKT & HORIZONTAL
+   ============================================================================ */
+
+.se-weather-widget {
+    width: 100%;
+    max-width: 300px;
+    background: var(--gp-background-color, #ffffff);
+    color: var(--gp-foreground-color, #333333);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    font-family: var(--gp-font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
+    font-size: var(--gp-perex-font-size, 0.875rem);
+    line-height: 1.4;
+}
+
+/* Aktuelles Wetter */
+.se-weather-current {
+    padding: 16px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #ffffff;
+    text-align: center;
+}
+
+.se-location {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+    opacity: 0.95;
+}
+
+.se-current-main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.se-icon-main {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+}
+
+.se-icon-main svg {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.se-temp-main {
+    font-size: 2.5rem;
+    font-weight: 300;
+    line-height: 1;
+}
+
+.se-temp-main span {
+    font-size: 1.5rem;
+    opacity: 0.8;
+}
+
+.se-description {
+    font-size: 0.875rem;
+    margin-bottom: 10px;
+    opacity: 0.95;
+    text-transform: capitalize;
+}
+
+.se-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.75rem;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    opacity: 0.9;
+}
+
+/* Vorhersage - HORIZONTAL Layout */
+.se-weather-forecast {
+    display: flex;
+    flex-direction: row;
+    gap: 0;
+    background: var(--gp-background-color, #ffffff);
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.se-forecast-day {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 8px;
+    border-right: 1px solid rgba(0, 0, 0, 0.05);
+    transition: background-color 0.2s ease;
+}
+
+.se-forecast-day:last-child {
+    border-right: none;
+}
+
+.se-forecast-day:hover {
+    background-color: rgba(102, 126, 234, 0.05);
+}
+
+.se-day-name {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--gp-foreground-color, #666);
+    letter-spacing: 0.5px;
+}
+
+.se-day-icon {
+    width: 32px;
+    height: 32px;
+    color: #667eea;
+}
+
+.se-day-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.se-day-temp {
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: var(--gp-foreground-color, #333);
+    white-space: nowrap;
+}
+
+/* Footer */
+.se-footer {
+    padding: 10px 12px;
+    text-align: center;
+    background: var(--gp-background-color, #fafafa);
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.se-footer small {
+    font-size: 0.65rem;
+    color: var(--gp-foreground-color, #999);
+}
+
+.se-footer a {
+    color: #667eea;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.se-footer a:hover {
+    color: #764ba2;
+    text-decoration: underline;
+}
+
+/* Error-Meldungen */
+.se-error {
+    padding: 16px;
+    background: #fee;
+    border-left: 4px solid #c33;
+    color: #c33;
+    font-size: 0.875rem;
+    border-radius: 4px;
+}
+
+.se-error a {
+    color: #c33;
+    font-weight: 600;
+}
+
+/* ============================================================================
+   RESPONSIVE ANPASSUNGEN
+   ============================================================================ */
+
+/* Für sehr schmale Sidebars (< 280px) */
+@media (max-width: 280px) {
+    .se-temp-main {
+        font-size: 2rem;
+    }
+
+    .se-icon-main {
+        width: 40px;
+        height: 40px;
+    }
+
+    .se-day-icon {
+        width: 28px;
+        height: 28px;
+    }
+
+    .se-forecast-day {
+        padding: 10px 6px;
+    }
+}
+
+/* Für mobile Geräte im Content-Bereich */
+@media (max-width: 500px) {
+    .se-weather-widget {
+        max-width: 100%;
+    }
+}
+
+/* Dark Mode Support (falls GeneratePress Dark Mode aktiv) */
+@media (prefers-color-scheme: dark) {
+    body.generate-dark-mode .se-weather-widget,
+    body.dark-mode .se-weather-widget {
+        background: var(--gp-background-color, #1a1a1a);
+        color: var(--gp-foreground-color, #e0e0e0);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    body.generate-dark-mode .se-forecast-day:hover,
+    body.dark-mode .se-forecast-day:hover {
+        background-color: rgba(102, 126, 234, 0.15);
+    }
+
+    body.generate-dark-mode .se-footer,
+    body.dark-mode .se-footer {
+        background: var(--gp-background-color, #0f0f0f);
+    }
+}
+
+/* ============================================================================
+   NEWS-FEED WIDGET
+   ============================================================================ */
+
+/* News-Feed Container (falls zusätzliche Styles benötigt werden) */
+.se-news-widget iframe {
+    display: block;
+    width: 100%;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* ============================================================================
+   SIDEBAR-SPEZIFISCHE ANPASSUNGEN
+   ============================================================================ */
+
+/* GeneratePress Sidebar Integration */
+.sidebar .widget .se-weather-widget {
+    margin-bottom: 0;
+}
+
+.sidebar .widget_text .se-weather-widget {
+    width: 100%;
+}
+
+/* Widget-Titel Abstände */
+.widget-title + .se-weather-widget,
+.widget-title + * > .se-weather-widget {
+    margin-top: 12px;
+}
+
+/* ============================================================================
+   ACCESSIBILITY
+   ============================================================================ */
+
+.se-weather-widget a:focus,
+.se-footer a:focus {
+    outline: 2px solid #667eea;
+    outline-offset: 2px;
+}
+
+/* Screen Reader Only */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* ============================================================================
+   PRINT STYLES
+   ============================================================================ */
+
+@media print {
+    .se-weather-widget {
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+
+    .se-footer small {
+        display: none;
+    }
+}
