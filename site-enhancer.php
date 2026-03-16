@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: Site Enhancer Widgets
+ * Plugin Name: Neukalen Site Enhancer
  * Plugin URI: https://neukalen.de
  * Description: Konsolidierte Widgets für Wetter und News - optimiert für GeneratePress Sidebar (300px)
  * Version: 1.0.0
@@ -37,6 +37,16 @@ function site_enhancer_get_default_options() {
         'location_name' => 'Neukalen',
         'forecast_days' => 3,
         'cache_duration' => 30,
+
+        // Widget-Anzeige
+        'show_footer' => true,
+
+        // Copyright-Footer
+        'copyright_text' => 'Copyright © ' . date('Y') . ' Peenestadt Neukalen.de',
+        'datenschutz_link' => '/datenschutz/',
+        'datenschutz_text' => 'Datenschutz',
+        'impressum_link' => '/impressum/',
+        'impressum_text' => 'Impressum',
     );
 }
 
@@ -125,6 +135,30 @@ function site_enhancer_sanitize_options($input) {
     if (isset($input['cache_duration'])) {
         $duration = intval($input['cache_duration']);
         $sanitized['cache_duration'] = ($duration >= 5 && $duration <= 1440) ? $duration : $defaults['cache_duration'];
+    }
+
+    // Widget-Anzeige
+    $sanitized['show_footer'] = isset($input['show_footer']) ? true : false;
+
+    // Copyright-Einstellungen
+    if (isset($input['copyright_text'])) {
+        $sanitized['copyright_text'] = sanitize_text_field($input['copyright_text']);
+    }
+
+    if (isset($input['datenschutz_link'])) {
+        $sanitized['datenschutz_link'] = sanitize_text_field($input['datenschutz_link']);
+    }
+
+    if (isset($input['datenschutz_text'])) {
+        $sanitized['datenschutz_text'] = sanitize_text_field($input['datenschutz_text']);
+    }
+
+    if (isset($input['impressum_link'])) {
+        $sanitized['impressum_link'] = sanitize_text_field($input['impressum_link']);
+    }
+
+    if (isset($input['impressum_text'])) {
+        $sanitized['impressum_text'] = sanitize_text_field($input['impressum_text']);
     }
 
     add_settings_error(
@@ -232,6 +266,74 @@ function site_enhancer_render_settings_page() {
                                value="<?php echo esc_attr($options['cache_duration']); ?>"
                                min="5" max="1440" step="5" class="small-text" />
                         <p class="description">5-1440 Minuten (Standard: 30)</p>
+                    </td>
+                </tr>
+                <tr>
+                    <th><label for="se_show_footer">Widget-Footer anzeigen</label></th>
+                    <td>
+                        <label>
+                            <input type="checkbox" id="se_show_footer"
+                                   name="site_enhancer_options[show_footer]"
+                                   value="1" <?php checked($options['show_footer'], true); ?> />
+                            OpenWeatherMap Attribution und Uhrzeit im Widget-Footer anzeigen
+                        </label>
+                    </td>
+                </tr>
+            </table>
+
+            <?php submit_button('Einstellungen speichern'); ?>
+        </form>
+
+        <hr>
+        <h2>Copyright & Footer Einstellungen</h2>
+        <form method="post" action="options.php">
+            <?php settings_fields('site_enhancer_options_group'); ?>
+
+            <table class="form-table">
+                <tr>
+                    <th><label for="se_copyright">Copyright-Text</label></th>
+                    <td>
+                        <input type="text" id="se_copyright"
+                               name="site_enhancer_options[copyright_text]"
+                               value="<?php echo esc_attr($options['copyright_text']); ?>"
+                               class="regular-text" placeholder="Copyright © <?php echo date('Y'); ?> Peenestadt Neukalen.de" />
+                        <p class="description">Der Copyright-Text im Footer. <code>{year}</code> wird automatisch durch das aktuelle Jahr ersetzt.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <th><label for="se_datenschutz_text">Datenschutz-Link Text</label></th>
+                    <td>
+                        <input type="text" id="se_datenschutz_text"
+                               name="site_enhancer_options[datenschutz_text]"
+                               value="<?php echo esc_attr($options['datenschutz_text']); ?>"
+                               class="regular-text" placeholder="Datenschutz" />
+                    </td>
+                </tr>
+                <tr>
+                    <th><label for="se_datenschutz_link">Datenschutz-Link URL</label></th>
+                    <td>
+                        <input type="text" id="se_datenschutz_link"
+                               name="site_enhancer_options[datenschutz_link]"
+                               value="<?php echo esc_attr($options['datenschutz_link']); ?>"
+                               class="regular-text" placeholder="/datenschutz/" />
+                    </td>
+                </tr>
+                <tr>
+                    <th><label for="se_impressum_text">Impressum-Link Text</label></th>
+                    <td>
+                        <input type="text" id="se_impressum_text"
+                               name="site_enhancer_options[impressum_text]"
+                               value="<?php echo esc_attr($options['impressum_text']); ?>"
+                               class="regular-text" placeholder="Impressum" />
+                    </td>
+                </tr>
+                <tr>
+                    <th><label for="se_impressum_link">Impressum-Link URL</label></th>
+                    <td>
+                        <input type="text" id="se_impressum_link"
+                               name="site_enhancer_options[impressum_link]"
+                               value="<?php echo esc_attr($options['impressum_link']); ?>"
+                               class="regular-text" placeholder="/impressum/" />
                     </td>
                 </tr>
             </table>
@@ -517,12 +619,14 @@ function site_enhancer_weather_display($atts) {
             </div>
         <?php endif; ?>
 
-        <div class="se-footer">
-            <small>
-                <a href="https://openweathermap.org/" target="_blank" rel="noopener">OpenWeatherMap</a>
-                • <?php echo esc_html(date_i18n('H:i', current_time('timestamp'))); ?>
-            </small>
-        </div>
+        <?php if (site_enhancer_get_option('show_footer')): ?>
+            <div class="se-footer">
+                <small>
+                    <a href="https://openweathermap.org/" target="_blank" rel="noopener">OpenWeatherMap</a>
+                    • <?php echo esc_html(date_i18n('H:i', current_time('timestamp'))); ?>
+                </small>
+            </div>
+        <?php endif; ?>
     </div>
     <?php
 
@@ -553,24 +657,22 @@ add_shortcode('news_feed', 'site_enhancer_news_feed');
  */
 
 /**
- * Styles enqueuen
+ * Styles enqueuen - bedingungslos für konsistente Widget-Darstellung
+ *
+ * CSS wird auf allen Seiten geladen, da:
+ * - Wetter-Widget in Sidebar auf allen Seiten angezeigt wird
+ * - CSS-Datei klein ist (8.8 KB) - minimale Performance-Auswirkung
+ * - Verhindert unformatierte Widgets in Sidebars, Custom HTML Blocks, etc.
  */
 function site_enhancer_enqueue_styles() {
-    global $post;
-
-    if (is_a($post, 'WP_Post') &&
-        (has_shortcode($post->post_content, 'site_weather') ||
-         has_shortcode($post->post_content, 'news_feed'))) {
-
-        wp_enqueue_style(
-            'site-enhancer-styles',
-            SITE_ENHANCER_URL . 'css/style.css',
-            array(),
-            SITE_ENHANCER_VERSION
-        );
-    }
+    wp_enqueue_style(
+        'site-enhancer-styles',
+        SITE_ENHANCER_URL . 'css/style.css',
+        array(),
+        SITE_ENHANCER_VERSION
+    );
 }
-add_action('wp_enqueue_scripts', 'site_enhancer_enqueue_styles', 999);
+add_action('wp_enqueue_scripts', 'site_enhancer_enqueue_styles');
 
 /**
  * ============================================================================
@@ -647,3 +749,36 @@ function site_enhancer_activate() {
     }
 }
 register_activation_hook(__FILE__, 'site_enhancer_activate');
+
+/**
+ * ============================================================================
+ * COPYRIGHT FILTER (GeneratePress)
+ * ============================================================================
+ */
+
+/**
+ * GeneratePress Copyright-Text anpassen
+ */
+function site_enhancer_custom_copyright() {
+    $copyright_text = site_enhancer_get_option('copyright_text');
+    $datenschutz_text = site_enhancer_get_option('datenschutz_text');
+    $datenschutz_link = site_enhancer_get_option('datenschutz_link');
+    $impressum_text = site_enhancer_get_option('impressum_text');
+    $impressum_link = site_enhancer_get_option('impressum_link');
+
+    // {year} Platzhalter ersetzen
+    $copyright_text = str_replace('{year}', date('Y'), $copyright_text);
+
+    $output = '<span aria-label="Copyright">' . esc_html($copyright_text) . '</span>';
+
+    if (!empty($datenschutz_link) && !empty($datenschutz_text)) {
+        $output .= ' – <a href="' . esc_url($datenschutz_link) . '">' . esc_html($datenschutz_text) . '</a>';
+    }
+
+    if (!empty($impressum_link) && !empty($impressum_text)) {
+        $output .= ' | <a href="' . esc_url($impressum_link) . '">' . esc_html($impressum_text) . '</a>';
+    }
+
+    return $output;
+}
+add_filter('generate_copyright', 'site_enhancer_custom_copyright');
