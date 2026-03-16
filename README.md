@@ -11,7 +11,7 @@ WordPress-Plugin mit konsolidierten Widgets für Wetter und News - optimiert fü
 Site Enhancer vereint mehrere Funktionen in einem schlanken Plugin:
 
 - **🌤️ Wetter-Widget** - Live-Wetterdaten mit OpenWeatherMap API
-- **📰 News-Feed** - Iframe-basiertes News-Widget
+- **📰 News-Feed** - RSS-basiertes News-Widget mit Nachladen
 - **🎨 GeneratePress-Integration** - Nutzt Theme CSS-Variablen für nahtloses Design
 - **📱 Responsive** - Optimiert für Sidebars ab 280px Breite
 - **🌙 Dark Mode** - Automatische Anpassung an Theme-Modi
@@ -29,9 +29,9 @@ Site Enhancer vereint mehrere Funktionen in einem schlanken Plugin:
 
 ### News-Feed
 
-- ✅ **Iframe-Integration** - Externes News-Feed einbinden
+- ✅ **Direkte RSS-Ausgabe** - Externen XML-Feed ohne iFrame darstellen
+- ✅ **10er-Schritte oder frei konfigurierbar** - Startmenge und Nachladen einstellbar
 - ✅ **Konfigurierbare Höhe** - Via Shortcode-Attribut anpassbar
-- ✅ **Lightweight** - Minimaler Performance-Impact
 
 ### Technisch
 
@@ -90,13 +90,28 @@ Site Enhancer vereint mehrere Funktionen in einem schlanken Plugin:
 [news_feed]
 ```
 
-**Mit Custom Höhe:**
+**Mit Custom Startmenge und Nachladen:**
 ```
-[news_feed height="800px"]
+[news_feed items="10" step="10" height="800px"]
+```
+
+**Mit Ajax-Paging:**
+```
+[news_feed items="10" mode="pages" height="800px"]
+```
+
+**Mit eigener Bildgröße:**
+```
+[news_feed items="10" image_width="140" image_height="80"]
 ```
 
 **Attribute:**
-- `height` - Höhe des iframes (Standard: 1000px)
+- `items` - Anzahl initial sichtbarer News (Standard: 10)
+- `step` - Anzahl weiterer News pro Klick (Standard: 10)
+- `mode` - `loadmore` oder `pages` fuer Ajax-Nachladen oder Seitennavigation
+- `image_width` - Breite der News-Bilder in Pixeln (Standard: 112)
+- `image_height` - Höhe der News-Bilder in Pixeln (Standard: 63)
+- `height` - Maximale Höhe der News-Liste (Standard: 1000px)
 
 ### Integration in Sidebar
 

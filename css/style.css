@@ -5,6 +5,135 @@
  */
 
 /* ============================================================================
+   WETTER-WIDGET – MINI + HOVER-POPUP
+   ============================================================================ */
+
+/*
+ * Das Popup wird per position:fixed ausgegeben (via JS-Klasse .se-popup-open)
+ * damit kein sidebar-overflow:hidden das Panel abschneidet.
+ * Ohne JS: reines CSS-Fallback mit position:absolute.
+ */
+
+/* Wrapper */
+.se-weather-compact-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+/* Mini-Ansicht */
+.se-weather-mini {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px 5px 8px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #fff;
+    border-radius: 20px;
+    cursor: default;
+    font-family: var(--gp-font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
+    font-size: 0.82rem;
+    font-weight: 500;
+    line-height: 1;
+    box-shadow: 0 1px 6px rgba(102, 126, 234, 0.35);
+    user-select: none;
+    transition: box-shadow 0.2s;
+    outline: none;
+}
+
+.se-weather-compact-wrapper:hover .se-weather-mini,
+.se-weather-mini:focus {
+    box-shadow: 0 3px 12px rgba(102, 126, 234, 0.5);
+}
+
+.se-mini-icon {
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.se-mini-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.se-mini-loc {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    opacity: 0.95;
+}
+
+.se-mini-temp {
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.se-mini-desc {
+    opacity: 0.8;
+    font-size: 0.75rem;
+}
+
+.se-mini-minmax {
+    opacity: 0.7;
+    font-size: 0.7rem;
+}
+
+.se-mini-arrow {
+    font-size: 0.65rem;
+    opacity: 0.7;
+    margin-left: 2px;
+    transition: transform 0.25s ease;
+}
+
+.se-weather-compact-wrapper:hover .se-mini-arrow,
+.se-weather-compact-wrapper:focus-within .se-mini-arrow {
+    transform: rotate(180deg);
+}
+
+/* Popup-Container – per JS als position:fixed positioniert */
+.se-weather-popup {
+    position: fixed;        /* wird via JS mit top/left befüllt */
+    z-index: 99999;
+    min-width: 240px;
+    max-width: 300px;
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-6px);
+    transition: opacity 0.22s ease, transform 0.22s ease, visibility 0s linear 0.22s;
+    filter: drop-shadow(0 6px 20px rgba(0,0,0,0.22));
+}
+
+.se-weather-popup.se-popup-visible {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+    transition: opacity 0.22s ease, transform 0.22s ease, visibility 0s linear 0s;
+}
+
+/* Link zur internen Wetterseite */
+.se-weather-page-link {
+    display: block;
+    text-align: center;
+    padding: 8px 12px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #fff !important;
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-decoration: none !important;
+    border-radius: 0 0 8px 8px;
+    transition: opacity 0.15s;
+}
+
+.se-weather-page-link:hover {
+    opacity: 0.9;
+}
+
+/* ============================================================================
    WETTER-WIDGET - KOMPAKT & HORIZONTAL
    ============================================================================ */
 
@@ -234,13 +363,268 @@
    NEWS-FEED WIDGET
    ============================================================================ */
 
-/* News-Feed Container (falls zusätzliche Styles benötigt werden) */
-.se-news-widget iframe {
-    display: block;
+/* News-Feed Container */
+.se-news-widget {
+    --se-news-image-width: 112px;
+    --se-news-image-height: 63px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    max-width: 666px;
+    margin: 0 auto;
+}
+
+.se-news-widget [hidden] {
+    display: none !important;
+}
+
+.se-news-list {
     width: 100%;
-    border: none;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.se-news-item {
+    padding: 0 0 10px;
+    margin: 0 0 10px;
+    border-bottom: 1px solid #bbb;
+}
+
+.se-news-item:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.se-news-content {
+    min-width: 0;
+}
+
+.se-news-content::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.se-news-source-link {
+    float: left;
+    margin-right: 10px;
+    line-height: 0;
+}
+
+.se-news-source-icon {
+    display: block;
+    width: auto;
+    height: 22px;
+}
+
+.se-news-thumb {
+    float: right;
+    display: block;
+    margin-left: 8px;
+    margin-bottom: 4px;
+}
+
+.se-news-thumb img {
+    display: block;
+    width: var(--se-news-image-width);
+    height: var(--se-news-image-height);
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+.se-news-title {
+    margin: 12px 0 0;
+    font-weight: bold;
+    padding: 0;
+    font-size: 16px;
+    line-height: 1.2;
+}
+
+.se-news-title a {
+    color: #165506;
+    text-decoration: none;
+}
+
+.se-news-title a:hover,
+.se-news-title a:focus {
+    text-decoration: underline;
+}
+
+.se-news-excerpt {
+    margin: 4px 0 0;
+    padding: 0;
+    font-size: 14px;
+    line-height: 1.35;
+    color: #333;
+}
+
+.se-news-meta {
+    margin: 4px 0 0;
+    font-size: 12px;
+    color: #666;
+}
+
+.se-news-more {
+    align-self: center;
+    padding: 10px 16px;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 999px;
+    background: #f4f6f8;
+    color: #1f2937;
+    font-size: 14px;
+    line-height: 1.2;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.se-news-more:hover,
+.se-news-more:focus {
+    background: #e8edf1;
+    border-color: rgba(0, 0, 0, 0.2);
+}
+
+.se-news-more:disabled {
+    cursor: progress;
+    opacity: 0.72;
+}
+
+.se-news-loading {
+    display: grid;
+    gap: 10px;
+}
+
+.se-news-skeleton-item {
+    display: grid;
+    grid-template-columns: var(--se-news-image-width) minmax(0, 1fr);
+    gap: 10px;
+    align-items: start;
+    padding: 0 0 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.se-news-skeleton-image,
+.se-news-skeleton-line {
+    background: linear-gradient(90deg, #eef1f4 25%, #f7f9fb 37%, #eef1f4 63%);
+    background-size: 400% 100%;
+    animation: se-news-shimmer 1.4s ease infinite;
+}
+
+.se-news-skeleton-image {
+    width: var(--se-news-image-width);
+    height: var(--se-news-image-height);
+    border-radius: 6px;
+}
+
+.se-news-skeleton-lines {
+    display: grid;
+    gap: 8px;
+    padding-top: 4px;
+}
+
+.se-news-skeleton-line {
+    display: block;
+    height: 12px;
+    border-radius: 999px;
+}
+
+.se-news-skeleton-line-title {
+    width: 84%;
+    height: 16px;
+}
+
+.se-news-skeleton-line-short {
+    width: 48%;
+}
+
+.se-news-feedback {
+    margin: 0;
+    font-size: 13px;
+    color: #a12622;
+    text-align: center;
+}
+
+.se-news-pagination {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+}
+
+.se-news-page {
+    min-width: 36px;
+    height: 36px;
+    padding: 0 10px;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 999px;
+    background: #fff;
+    color: #1f2937;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.se-news-page:hover,
+.se-news-page:focus {
+    background: #eef4ea;
+    border-color: rgba(22, 85, 6, 0.25);
+}
+
+.se-news-page.is-active {
+    background: #165506;
+    border-color: #165506;
+    color: #fff;
+}
+
+.se-news-page-gap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    color: #666;
+}
+
+.se-news-widget.is-loading .se-news-list {
+    opacity: 0.92;
+}
+
+.se-news-widget.is-loading .se-news-more,
+.se-news-widget.is-loading .se-news-page {
+    pointer-events: none;
+}
+
+.se-news-empty {
+    margin: 0;
+    color: #555;
+}
+
+@keyframes se-news-shimmer {
+    0% {
+        background-position: 100% 0;
+    }
+    100% {
+        background-position: 0 0;
+    }
+}
+
+@media (max-width: 420px) {
+    .se-news-thumb {
+        float: none;
+        margin: 8px 0 6px;
+    }
+
+    .se-news-thumb img {
+        width: 100%;
+        height: auto;
+    }
+
+    .se-news-skeleton-item {
+        grid-template-columns: 1fr;
+    }
+
+    .se-news-skeleton-image {
+        width: 100%;
+        height: 120px;
+    }
 }
 
 /* ============================================================================
@@ -267,7 +651,10 @@
    ============================================================================ */
 
 .se-weather-widget a:focus,
-.se-footer a:focus {
+.se-footer a:focus,
+.se-news-title a:focus,
+.se-news-more:focus,
+.se-news-page:focus {
     outline: 2px solid #667eea;
     outline-offset: 2px;
 }
@@ -283,6 +670,50 @@
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
     border-width: 0;
+}
+
+/* ============================================================================
+   VERANSTALTUNGS-META-BADGE
+   ============================================================================ */
+
+.nk-event-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25em 1.1em;
+    margin: 0 0 0.85em;
+    padding: 0.5em 0.9em;
+    background: #fdf5ec;          /* helles Warmton, passt zu allen Akzentfarben */
+    border-left: 3px solid #e67e22; /* wird inline via style überschrieben */
+    border-radius: 0 5px 5px 0;
+    font-size: 0.875em;
+    line-height: 1.5;
+    color: #222;
+}
+
+.nk-event-meta span {
+    white-space: nowrap;
+}
+
+/* Im Einzelbeitrag etwas mehr Abstand */
+.single .nk-event-meta,
+.page .nk-event-meta {
+    margin-bottom: 1.2em;
+    font-size: 0.925em;
+}
+
+/* In Beitragslisten / Neueste-Beiträge-Block */
+.wp-block-post .nk-event-meta,
+.wp-block-latest-posts__post-excerpt .nk-event-meta {
+    margin-top: 0.4em;
+}
+
+@media (max-width: 480px) {
+    .nk-event-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.2em;
+    }
 }
 
 /* ============================================================================
